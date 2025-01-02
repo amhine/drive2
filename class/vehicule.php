@@ -27,13 +27,22 @@ class Vehicule {
         }
     }
 
-    // Récupérer tous les véhicules d'une catégorie donnée
+   
+
     public function getVehiculesByCategorie($id_categorie) {
-        $query = "SELECT * FROM vehicule WHERE id_categorie = :id_categorie";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute(['id_categorie' => $id_categorie]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $sql = "SELECT * FROM vehicule WHERE id_categorie = :id_categorie";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':id_categorie', $id_categorie, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Erreur lors de la récupération des véhicules : " . $e->getMessage();
+            return [];
+        }
     }
+    
+    
     
 
     // Ajouter un véhicule dans la base de données

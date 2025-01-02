@@ -3,9 +3,9 @@ include './conexion.php';
 require './../class/vehicule.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $marque = htmlspecialchars($_POST['marque']);
-    $modele = htmlspecialchars($_POST['madele']);
-    $prix = htmlspecialchars($_POST['prix']);
+    $marque = ($_POST['marque']);
+    $modele = ($_POST['madele']);
+    $prix = ($_POST['prix']);
     $id_categorie = $_POST['id_categorie'];
 
     $image = $_FILES['image'];

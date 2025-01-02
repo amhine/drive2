@@ -1,61 +1,28 @@
 <?php
-// require './conexion.php';
-// require './../class/categorier.php';
+include './conexion.php'; // Connexion à la base de données
+require './../class/vehicule.php'; // Classe pour gérer les véhicules
+require './../class/categorier.php'; // Classe pour gérer les catégories
 
-// $db = new Database();
-// $categorie = new Categorie($db);
+$db = new Database();
+$vehicule = new Vehicule($db);
+$categorie = new Categorie($db);
 
-// Vérifier si l'ID de catégorie est passé dans l'URL
-// if (isset($_GET['id']) && !empty($_GET['id'])) {
-    $id = $_GET['id'];
-    $cat = $categorie->getCategorieById($id);
-    
-    if ($cat) {
-        // Affichage des informations de la catégorie si trouvée
-        echo "<h1>" . htmlspecialchars($cat['nom']) . "</h1>";
-        echo "<p>" . htmlspecialchars($cat['description']) . "</p>";
-    
-        // Vérifier si l'ID du véhicule est passé dans l'URL
-        if (isset($_GET['id_vehicule']) && !empty($_GET['id_vehicule'])) {
-            $id_vehicule = $_GET['id_vehicule'];
-        
-            // Récupérer les détails du véhicule à partir de l'ID
-            $query = "SELECT * FROM vehicule WHERE id_vehicule = :id_vehicule AND id_categorie = :id_categorie";
-            $stmt = $db->prepare($query);
-            $stmt->execute(['id_vehicule' => $id_vehicule, 'id_categorie' => $id]);
-            $vehicule = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-            if ($vehicule) {
-                // Affichage des détails du véhicule
-                echo "<h2>Réservation pour " . htmlspecialchars($vehicule['marque']) . " " . htmlspecialchars($vehicule['modele']) . "</h2>";
-                echo "<p>Prix: " . htmlspecialchars($vehicule['prix']) . " €</p>";
-                echo "<img src='" . htmlspecialchars($vehicule['image']) . "' alt='" . htmlspecialchars($vehicule['marque']) . "' class='w-36 h-24 object-cover'>";
-        
-                // Ajouter un formulaire de réservation
-                echo '<form action="confirmer_reservation.php" method="POST">';
-                echo '<input type="hidden" name="id_vehicule" value="' . $vehicule['id_vehicule'] . '">';
-                echo '<button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Confirmer la réservation</button>';
-                echo '</form>';
-            } else {
-                echo "Véhicule non trouvé.";
-            }
-        } else {
-            echo "ID de véhicule manquant.";
-        }
-    } else {
-        echo "Catégorie non trouvée.";
+if (isset($_GET['id'])) {
+    $id_categorie = intval($_GET['id']); // Récupération sécurisée de l'ID
+    $vehicules = $vehicule->getVehiculesByCategorie($id_categorie);
+
+    if (empty($vehicules)) {
+        $message = "Aucun véhicule trouvé pour cette catégorie.";
     }
-// } else {
-//     echo "ID de catégorie manquant.";
-// }
+} else {
+    die("Aucune catégorie sélectionnée.");
+}
 ?>
 
-
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     
@@ -63,7 +30,7 @@
     <link rel="stylesheet" href="output.css">
 </head>
 <body>
-    <nav class="bg-gray-800 mb-14 ">
+    <nav class="bg-gray-800 mb-8">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between h-16">
             <!-- Logo -->
@@ -103,96 +70,41 @@
         </div>
     </nav>
 
-    <div id="21lgba2puTpseL0QbjNZv9" class="flex flex-col md:flex-row bg-white shadow-lg mt-8 rounded-lg overflow-hidden">
-        <!-- Texte -->
-        <div class="flex-1 p-6">
-            <p class="text-xs font-bold text-blue-500 uppercase mb-2">
-                Allez plus loin
-            </p>
-            <h2 class="text-xl font-bold text-gray-900 mb-4">
-                Voitures par modèle
-            </h2>
-            <div class="text-sm text-gray-600 mb-4">
-                Découvrez nos différents modèles de voitures !
-            </div>
-            <a href="/fr-fr/p/location-voiture/flotte/type/premium/par-modele" class="inline-block bg-blue-500 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
-                Réservez maintenant
-            </a>
+
+
+        <div class="reservation-card bg-white border border-gray-300 rounded-lg shadow-lg p-6 hover:shadow-xl transition-transform transform hover:-translate-y-2">
+        <div class="mt-6 text-center mb-5 text-xl font-bold">
+                            <a href="categorier.php" class="text-blue-500 font-semibold hover:underline">Retour aux catégories</a>
+                        </div>
+                    
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid gap-6">
+                            <?php foreach ($vehicules as $veh): ?>
+                            <div class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105">
+                                <img src="<?php echo ($veh['image']); ?>" alt="vehicle-<?php echo strtolower($veh['marque']); ?>" class="w-36 h-24 object-cover mx-auto mb-4">
+                                
+                                <h3 class="text-lg font-bold text-gray-900 mb-2"><?php echo ($veh['marque'] . ' ' . $veh['madele']); ?></h3>
+                                
+                                <p class="text-sm text-gray-600 mb-4">Prix : <?php echo ($veh['prix']); ?> DH</p>
+                                 
+                                <form action="reservation_vehicule.php" method="POST">
+                                    <input type="hidden" name="id_vehicule" value="<?php echo $veh['id_vehicule']; ?>">
+                                    <button type="submit" class="text-white bg-red-600 rounded-lg w-56 h-10   text-lg font-bold hover:bg-red-700 transition-colors">
+                                        Reserved
+                                    </button>
+                                </form>
+
+                                
+                            </div>
+                        <?php endforeach; ?>
+                        
+                    </div>
+                    </div>
+
         </div>
 
-        <!-- Image -->
-        <div class="h-48 md:h-auto md:w-1/3 bg-cover bg-center" style="background-image: url('https://images.ctfassets.net/wmdwnw6l5vg5/7uJ4ZSSInsxyWFZKPlm5DQ/355d7afdd59d2cfe616e99360f299eb1/278d45da-ab62-4310-9c3e-c8371bf3c0e1-min.png');"></div>
-    </div>
-   
-  
-    <div class="flex flex-col md:flex-row bg-white shadow-lg rounded-lg overflow-hidden md:gap-x-96 mt-8">
-        <!-- Image -->
-        <div class="h-48 md:h-auto md:w-1/3 bg-cover bg-center" style="background-image: url('https://images.ctfassets.net/wmdwnw6l5vg5/6T17VrZY8nkVjE31TZlY53/4bf3eddd6b435ede9b3e2b7eb00e16e4/43400_GWY_R__1_.png');"></div>
-
-        <!-- Texte -->
-        <div class="flex-1 p-6 justify-end ">
-            <p class="text-xs font-bold text-blue-500 uppercase  mb-2">
-                Déplacez-vous partout
-            </p>
-            <h2 class="text-xl font-bold text-gray-900 mb-4">
-                Voitures par marque
-            </h2>
-            <div class="text-sm text-gray-600 mb-4">
-                Découvrez nos différentes marques de voitures de luxe !
-            </div>
-            <a href="/fr-fr/p/location-voiture/flotte/type/premium/par-marque" class="inline-block bg-blue-500 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
-                Réservez maintenant
-            </a>
-        </div>
-    </div>
-
-    <div id="21lgba2puTpseL0QbjNZv9" class="flex flex-col md:flex-row bg-white shadow-lg mt-8 rounded-lg overflow-hidden">
-        <!-- Texte -->
-        <div class="flex-1 p-6">
-            <p class="text-xs font-bold text-blue-500 uppercase mb-2">
-                Allez plus loin
-            </p>
-            <h2 class="text-xl font-bold text-gray-900 mb-4">
-                Voitures par modèle
-            </h2>
-            <div class="text-sm text-gray-600 mb-4">
-                Découvrez nos différents modèles de voitures !
-            </div>
-            <a href="/fr-fr/p/location-voiture/flotte/type/premium/par-modele" class="inline-block bg-blue-500 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
-                Réservez maintenant
-            </a>
-        </div>
-
-        <!-- Image -->
-        <div class="h-48 md:h-auto md:w-1/3 bg-cover bg-center" style="background-image: url('https://images.ctfassets.net/wmdwnw6l5vg5/7uJ4ZSSInsxyWFZKPlm5DQ/355d7afdd59d2cfe616e99360f299eb1/278d45da-ab62-4310-9c3e-c8371bf3c0e1-min.png');"></div>
-    </div>
-   
-  
-    <div class="flex flex-col md:flex-row bg-white shadow-lg rounded-lg overflow-hidden md:gap-x-96 mt-8">
-        <!-- Image -->
-        <div class="h-48 md:h-auto md:w-1/3 bg-cover bg-center" style="background-image: url('https://images.ctfassets.net/wmdwnw6l5vg5/6T17VrZY8nkVjE31TZlY53/4bf3eddd6b435ede9b3e2b7eb00e16e4/43400_GWY_R__1_.png');"></div>
-
-        <!-- Texte -->
-        <div class="flex-1 p-6 justify-end ">
-            <p class="text-xs font-bold text-blue-500 uppercase  mb-2">
-                Déplacez-vous partout
-            </p>
-            <h2 class="text-xl font-bold text-gray-900 mb-4">
-                Voitures par marque
-            </h2>
-            <div class="text-sm text-gray-600 mb-4">
-                Découvrez nos différentes marques de voitures de luxe !
-            </div>
-            <a href="/fr-fr/p/location-voiture/flotte/type/premium/par-marque" class="inline-block bg-blue-500 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
-                Réservez maintenant
-            </a>
-        </div>
-    </div>
-
-
-
-    <footer class="bg-gray-800 text-gray-300 py-10 mt-12">
-        <div class="container mx-auto px-4">
+        <footer class="bg-gray-800 text-gray-300 py-10 mt-8">
+            <div class="container mx-auto px-4">
             <!-- Section principale -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
             <!-- Logo et description -->
@@ -259,9 +171,6 @@
             </p>
             </div>
         </div>
-    </footer>
+    </footer>      
 </body>
 </html>
-
-
-

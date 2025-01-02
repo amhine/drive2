@@ -40,8 +40,8 @@ $categories = $categorie->getCategories();
                     <select name="id_categorie" id="id_categorie" class="w-full p-2 mb-4 rounded-md bg-gray-100" required>
                         <option value="" disabled selected>Sélectionner une catégorie</option>
                         <?php foreach ($categories as $cat): ?>
-                            <option value="<?php echo htmlspecialchars($cat['id_categorie']); ?>">
-                                <?php echo htmlspecialchars($cat['nom']); ?>
+                            <option value="<?php echo ($cat['id_categorie']); ?>">
+                                <?php echo ($cat['nom']); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
