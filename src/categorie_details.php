@@ -1,3 +1,57 @@
+<?php
+// require './conexion.php';
+// require './../class/categorier.php';
+
+// $db = new Database();
+// $categorie = new Categorie($db);
+
+// Vérifier si l'ID de catégorie est passé dans l'URL
+// if (isset($_GET['id']) && !empty($_GET['id'])) {
+    $id = $_GET['id'];
+    $cat = $categorie->getCategorieById($id);
+    
+    if ($cat) {
+        // Affichage des informations de la catégorie si trouvée
+        echo "<h1>" . htmlspecialchars($cat['nom']) . "</h1>";
+        echo "<p>" . htmlspecialchars($cat['description']) . "</p>";
+    
+        // Vérifier si l'ID du véhicule est passé dans l'URL
+        if (isset($_GET['id_vehicule']) && !empty($_GET['id_vehicule'])) {
+            $id_vehicule = $_GET['id_vehicule'];
+        
+            // Récupérer les détails du véhicule à partir de l'ID
+            $query = "SELECT * FROM vehicule WHERE id_vehicule = :id_vehicule AND id_categorie = :id_categorie";
+            $stmt = $db->prepare($query);
+            $stmt->execute(['id_vehicule' => $id_vehicule, 'id_categorie' => $id]);
+            $vehicule = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+            if ($vehicule) {
+                // Affichage des détails du véhicule
+                echo "<h2>Réservation pour " . htmlspecialchars($vehicule['marque']) . " " . htmlspecialchars($vehicule['modele']) . "</h2>";
+                echo "<p>Prix: " . htmlspecialchars($vehicule['prix']) . " €</p>";
+                echo "<img src='" . htmlspecialchars($vehicule['image']) . "' alt='" . htmlspecialchars($vehicule['marque']) . "' class='w-36 h-24 object-cover'>";
+        
+                // Ajouter un formulaire de réservation
+                echo '<form action="confirmer_reservation.php" method="POST">';
+                echo '<input type="hidden" name="id_vehicule" value="' . $vehicule['id_vehicule'] . '">';
+                echo '<button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Confirmer la réservation</button>';
+                echo '</form>';
+            } else {
+                echo "Véhicule non trouvé.";
+            }
+        } else {
+            echo "ID de véhicule manquant.";
+        }
+    } else {
+        echo "Catégorie non trouvée.";
+    }
+// } else {
+//     echo "ID de catégorie manquant.";
+// }
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +63,7 @@
     <link rel="stylesheet" href="output.css">
 </head>
 <body>
-    <nav class="bg-gray-800 ">
+    <nav class="bg-gray-800 mb-14 ">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between h-16">
             <!-- Logo -->
@@ -48,45 +102,93 @@
             <a href="avis.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">avis</a>
         </div>
     </nav>
-    <div class="relative bg-cover bg-center " style="background-image: url('../img/bg_1.jpg');" data-stellar-background-ratio="0.5">
-        <div class="absolute inset-0 bg-black opacity-50"></div> <!-- Overlay -->
-        <div class="container relative z-10">
-            <div class="flex items-center justify-center h-full text-center py-24">
-            <div class="w-full lg:w-2/3">
-                <div class="text-white">
-                <h1 class="text-4xl md:text-5xl font-bold mb-4">Fast &amp; Easy Way To Rent A Car</h1>
-                <p class="text-lg md:text-xl mb-4">A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts</p>
-                
-                </div>
+
+    <div id="21lgba2puTpseL0QbjNZv9" class="flex flex-col md:flex-row bg-white shadow-lg mt-8 rounded-lg overflow-hidden">
+        <!-- Texte -->
+        <div class="flex-1 p-6">
+            <p class="text-xs font-bold text-blue-500 uppercase mb-2">
+                Allez plus loin
+            </p>
+            <h2 class="text-xl font-bold text-gray-900 mb-4">
+                Voitures par modèle
+            </h2>
+            <div class="text-sm text-gray-600 mb-4">
+                Découvrez nos différents modèles de voitures !
             </div>
+            <a href="/fr-fr/p/location-voiture/flotte/type/premium/par-modele" class="inline-block bg-blue-500 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
+                Réservez maintenant
+            </a>
+        </div>
+
+        <!-- Image -->
+        <div class="h-48 md:h-auto md:w-1/3 bg-cover bg-center" style="background-image: url('https://images.ctfassets.net/wmdwnw6l5vg5/7uJ4ZSSInsxyWFZKPlm5DQ/355d7afdd59d2cfe616e99360f299eb1/278d45da-ab62-4310-9c3e-c8371bf3c0e1-min.png');"></div>
+    </div>
+   
+  
+    <div class="flex flex-col md:flex-row bg-white shadow-lg rounded-lg overflow-hidden md:gap-x-96 mt-8">
+        <!-- Image -->
+        <div class="h-48 md:h-auto md:w-1/3 bg-cover bg-center" style="background-image: url('https://images.ctfassets.net/wmdwnw6l5vg5/6T17VrZY8nkVjE31TZlY53/4bf3eddd6b435ede9b3e2b7eb00e16e4/43400_GWY_R__1_.png');"></div>
+
+        <!-- Texte -->
+        <div class="flex-1 p-6 justify-end ">
+            <p class="text-xs font-bold text-blue-500 uppercase  mb-2">
+                Déplacez-vous partout
+            </p>
+            <h2 class="text-xl font-bold text-gray-900 mb-4">
+                Voitures par marque
+            </h2>
+            <div class="text-sm text-gray-600 mb-4">
+                Découvrez nos différentes marques de voitures de luxe !
             </div>
+            <a href="/fr-fr/p/location-voiture/flotte/type/premium/par-marque" class="inline-block bg-blue-500 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
+                Réservez maintenant
+            </a>
         </div>
     </div>
-    <div class="container mx-auto mt-12">
-        <div class="flex flex-wrap">
-            <!-- Image Section -->
-            <div class="w-full md:w-1/2 bg-cover bg-center" style="background-image: url('../img/about.jpg');">
-            </div>
 
-            <!-- Text Section -->
-            <div class="w-full md:w-1/2 bg-white flex items-center p-6 md:p-10">
-                <div class="text-gray-800">
-                    <span class="block text-lg text-blue-500 font-semibold mb-2">About us</span>
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Welcome to Carbook</h2>
-
-                    <p class="mb-4">
-                        A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.
-                    </p>
-                    <p class="mb-6">
-                        On her way she met a copy. The copy warned the Little Blind Text, that where it came from it would have been rewritten a thousand times and everything that was left from its origin would be the word "and" and the Little Blind Text should turn around and return to its own, safe country. A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.
-                    </p>
-                    <a href="#" class="bg-blue-500 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-600 transition">
-                        Search Vehicle
-                    </a>
-                </div>
+    <div id="21lgba2puTpseL0QbjNZv9" class="flex flex-col md:flex-row bg-white shadow-lg mt-8 rounded-lg overflow-hidden">
+        <!-- Texte -->
+        <div class="flex-1 p-6">
+            <p class="text-xs font-bold text-blue-500 uppercase mb-2">
+                Allez plus loin
+            </p>
+            <h2 class="text-xl font-bold text-gray-900 mb-4">
+                Voitures par modèle
+            </h2>
+            <div class="text-sm text-gray-600 mb-4">
+                Découvrez nos différents modèles de voitures !
             </div>
+            <a href="/fr-fr/p/location-voiture/flotte/type/premium/par-modele" class="inline-block bg-blue-500 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
+                Réservez maintenant
+            </a>
+        </div>
+
+        <!-- Image -->
+        <div class="h-48 md:h-auto md:w-1/3 bg-cover bg-center" style="background-image: url('https://images.ctfassets.net/wmdwnw6l5vg5/7uJ4ZSSInsxyWFZKPlm5DQ/355d7afdd59d2cfe616e99360f299eb1/278d45da-ab62-4310-9c3e-c8371bf3c0e1-min.png');"></div>
+    </div>
+   
+  
+    <div class="flex flex-col md:flex-row bg-white shadow-lg rounded-lg overflow-hidden md:gap-x-96 mt-8">
+        <!-- Image -->
+        <div class="h-48 md:h-auto md:w-1/3 bg-cover bg-center" style="background-image: url('https://images.ctfassets.net/wmdwnw6l5vg5/6T17VrZY8nkVjE31TZlY53/4bf3eddd6b435ede9b3e2b7eb00e16e4/43400_GWY_R__1_.png');"></div>
+
+        <!-- Texte -->
+        <div class="flex-1 p-6 justify-end ">
+            <p class="text-xs font-bold text-blue-500 uppercase  mb-2">
+                Déplacez-vous partout
+            </p>
+            <h2 class="text-xl font-bold text-gray-900 mb-4">
+                Voitures par marque
+            </h2>
+            <div class="text-sm text-gray-600 mb-4">
+                Découvrez nos différentes marques de voitures de luxe !
+            </div>
+            <a href="/fr-fr/p/location-voiture/flotte/type/premium/par-marque" class="inline-block bg-blue-500 text-white text-lg font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
+                Réservez maintenant
+            </a>
         </div>
     </div>
+
 
 
     <footer class="bg-gray-800 text-gray-300 py-10 mt-12">
@@ -158,17 +260,8 @@
             </div>
         </div>
     </footer>
-
 </body>
-<script>
-  // Toggle mobile menu
-  const menuToggle = document.getElementById("menu-toggle");
-  const menu = document.getElementById("menu");
-  const mobileMenu = document.getElementById("mobile-menu");
-
-  menuToggle.addEventListener("click", () => {
-    menu.classList.toggle("hidden");
-    mobileMenu.classList.toggle("hidden");
-  });
-</script>
 </html>
+
+
+
