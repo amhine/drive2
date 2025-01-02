@@ -13,38 +13,38 @@ $vehicules = $vehicule->getvehicule() ;
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
+    <head>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="input.css">
-    <link rel="stylesheet" href="output.css">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="input.css">
+        <link rel="stylesheet" href="output.css">
 
-</head>
-<body class="bg-indigo-50 min-h-screen overflow-x-hidden">
+    </head>
+    <body class="bg-indigo-50 min-h-screen overflow-x-hidden">
    
 
     
-    <header class="fixed w-full bg-white text-indigo-800 z-50 shadow-lg animate-slide-down">
-        <div class="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between h-16">
-            <button class="mobile-menu-button p-2 lg:hidden">
-                    <span class="block w-6 h-0.5 bg-gray-700 mb-1"></span>
-                    <span class="block w-6 h-0.5 bg-gray-700 mb-1"></span>
-                    <span class="block w-6 h-0.5 bg-gray-700"></span>
-                
-            </button>
-            <div class="text-xl font-bold text-blue-400">
-                Admin<span class="text-blue-400">VOITURE</span>
+        <header class="fixed w-full bg-white text-indigo-800 z-50 shadow-lg animate-slide-down">
+            <div class="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between h-16">
+                <button class="mobile-menu-button p-2 lg:hidden">
+                        <span class="block w-6 h-0.5 bg-gray-700 mb-1"></span>
+                        <span class="block w-6 h-0.5 bg-gray-700 mb-1"></span>
+                        <span class="block w-6 h-0.5 bg-gray-700"></span>
+                    
+                </button>
+                <div class="text-xl font-bold text-blue-400">
+                    Admin<span class="text-blue-400">VOITURE</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <img class="w-10 h-10 rounded-full transition-transform duration-300 hover:scale-110 object-cover" 
+                        src="https://th.bing.com/th/id/R.b6350e5011a7b61996efada66d100575?rik=7D6Ni11ELDKMoA&pid=ImgRaw&r=0" 
+                        alt="Profile">
+                </div>
             </div>
-            <div class="flex items-center space-x-2">
-                <img class="w-10 h-10 rounded-full transition-transform duration-300 hover:scale-110 object-cover" 
-                     src="https://th.bing.com/th/id/R.b6350e5011a7b61996efada66d100575?rik=7D6Ni11ELDKMoA&pid=ImgRaw&r=0" 
-                     alt="Profile">
-            </div>
-        </div>
-    </header>
-    <div class="overlay fixed inset-0 bg-indigo-900/50 z-40 hidden opacity-0 transition-opacity duration-300"></div>
+        </header>
+        
         
 
 
@@ -109,49 +109,74 @@ $vehicules = $vehicule->getvehicule() ;
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    
-
-                   
-                   
-                </div>
+                
 
                 <div class="reservations-container container mx-auto flex flex-col gap-8 py-8">
-    <div class="reservation-card bg-white border border-gray-300 rounded-lg shadow-lg p-6 hover:shadow-xl transition-transform transform hover:-translate-y-2">
-        <h1 class="text-center text-4xl font-bold text-blue-400 mt-4 mb-4">Nouvelle categorier</h1>
+                    <div class="reservation-card bg-white border border-gray-300 rounded-lg shadow-lg p-6 hover:shadow-xl transition-transform transform hover:-translate-y-2">
+                        <h1 class="text-center text-4xl font-bold text-blue-400 mt-4 mb-4">Nouvelle categorier</h1>
 
-        <?php foreach ($categories as $cat): ?>
-            <div class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105">
-                <h3 class="text-lg font-bold text-gray-900 mb-2"><?php echo htmlspecialchars($cat['nom']); ?></h3>
-                <p class="text-sm text-gray-600 mb-4"><?php echo htmlspecialchars($cat['description']); ?></p>
-                <div class="mt-auto">
-                    <img src="<?php echo htmlspecialchars($cat['image']); ?>" alt="vehicle-type-<?php echo strtolower($cat['nom']); ?>" class="w-36 h-24 object-cover mx-auto">
-                    <span class="mt-4 block text-blue-600 font-semibold hover:underline">Voir plus</span>
+                            <?php foreach ($categories as $cat): ?>
+                                <div class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-2"><?php echo htmlspecialchars($cat['nom']); ?></h3>
+                                    <p class="text-sm text-gray-600 mb-4"><?php echo htmlspecialchars($cat['description']); ?></p>
+                                    <div class="mt-auto">
+                                        <img src="<?php echo htmlspecialchars($cat['image']); ?>" alt="vehicle-type-<?php echo strtolower($cat['nom']); ?>" class="w-36 h-24 object-cover mx-auto">
+                                        <span class="mt-4 block text-blue-600 font-semibold hover:underline">Voir plus</span>
+                                    </div>
+
+                                
+                                    <div class="mt-4 flex gap-4 ">
+                                    
+                                        <a href="modifier_categorie.php?id_categorie=<?php echo $cat['id_categorie']; ?>" class="text-white bg-yellow-500 rounded-lg px-4 py-2 hover:bg-yellow-600 transition-colors">
+                                            Modifier
+                                        </a>
+                                        
+                                        <form action="supprimer_categorie.php" method="POST" >
+                                            <input type="hidden" name="id_categorie" value="<?php echo $cat['id_categorie']; ?>">
+                                            <button type="submit" class="text-white bg-red-600 rounded-lg px-4 py-2 hover:bg-red-700 transition-colors">
+                                                Supprimer
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>  
+
                 </div>
 
-               
-                <div class="mt-4 flex gap-4 ">
-                   
-                    <a href="modifier_categorie.php?id_categorie=<?php echo $cat['id_categorie']; ?>" class="text-white bg-yellow-500 rounded-lg px-4 py-2 hover:bg-yellow-600 transition-colors">
-                        Modifier
-                    </a>
-                    
-                    <form action="supprimer_categorie.php" method="POST" >
-                        <input type="hidden" name="id_categorie" value="<?php echo $cat['id_categorie']; ?>">
-                        <button type="submit" class="text-white bg-red-600 rounded-lg px-4 py-2 hover:bg-red-700 transition-colors">
-                            Supprimer
-                        </button>
-                    </form>
-                </div>
-            </div>
-        <?php endforeach; ?>  
+                <div class="reservation-card bg-white border border-gray-300 rounded-lg shadow-lg p-6 hover:shadow-xl transition-transform transform hover:-translate-y-2">
+                    <h1 class="text-center text-4xl font-bold text-blue-400 mt-4 mb-4">Liste des véhicules</h1>
 
-    </div>
-</div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <?php foreach ($vehicules as $vehicule): ?>
+                            <div class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105">
+                                <img src="<?php echo htmlspecialchars($vehicule['image']); ?>" alt="vehicle-<?php echo strtolower($vehicule['marque']); ?>" class="w-36 h-24 object-cover mx-auto mb-4">
+                                
+                                <h3 class="text-lg font-bold text-gray-900 mb-2"><?php echo htmlspecialchars($vehicule['marque'] . ' ' . $vehicule['madele']); ?></h3>
+                                
+                                <p class="text-sm text-gray-600 mb-4">Prix : <?php echo htmlspecialchars($vehicule['prix']); ?> DH</p>
+                                
+                                <div class="mt-auto flex gap-4">
+                                    <a href="modifier_vehicule.php?id_vehicule=<?php echo $vehicule['id_vehicule']; ?>" class="text-white bg-yellow-500 rounded-lg px-4 py-2 hover:bg-yellow-600 transition-colors">
+                                        Modifier
+                                    </a>
+                                    
+                                    <form action="supprimer_vehicule.php" method="POST">
+                                        <input type="hidden" name="id_vehicule" value="<?php echo $vehicule['id_vehicule']; ?>">
+                                        <button type="submit" class="text-white bg-red-600 rounded-lg px-4 py-2 hover:bg-red-700 transition-colors">
+                                            Supprimer
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                    </div>
+
+                </div>
 
             </main>
         </div> 
-    </div>   
+      
 
     
 </body>

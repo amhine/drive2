@@ -40,6 +40,13 @@ class Categorie {
         }
     }
 
+    public function getAllCategories() {
+        $query = "SELECT * FROM categorie";
+        $stmt = $this->connect->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     // Ajouter une nouvelle catégorie
     public function addCategorie($nom, $description, $image) {
         try {
@@ -80,5 +87,6 @@ class Categorie {
             echo "Error deleting category: " . $e->getMessage();
         }
     }
+   
 }
 ?>
