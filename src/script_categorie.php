@@ -16,7 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         header("Location: dashbord.php");
         exit();
     } else {
-        // Afficher un message d'erreur si les données sont manquantes
         echo "Veuillez remplir tous les champs.";
     }
 }

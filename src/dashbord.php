@@ -2,10 +2,13 @@
 
 include './conexion.php';
 require './../class/categorier.php';
+require './../class/vehicule.php';
 
 $db = new Database();
 $categorie = new Categorie($db); 
 $categories = $categorie->getCategories();
+$vehicule = new Vehicule($db); 
+$vehicules = $vehicule->getvehicule() ;
 
 ?>
 <!DOCTYPE html>
@@ -56,7 +59,7 @@ $categories = $categorie->getCategories();
                             Home
                    
                     </a>
-                    <a href="" class="flex items-center text-gray-600 hover:text-blue-400 py-4 transition-all duration-300 hover:translate-x-1">
+                    <a href="ajoutvehiculeadmin.php" class="flex items-center text-gray-600 hover:text-blue-400 py-4 transition-all duration-300 hover:translate-x-1">
                     
                         <img src="../img/menu.png" alt="menu Icon" class="w-6 h-6 mr-2">
                         Another vehicule

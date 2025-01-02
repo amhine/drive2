@@ -8,11 +8,23 @@ class Vehicule {
     }
 
     // Récupérer les détails d'un véhicule par son ID
-    public function getVehiculeById($id_vehicule) {
-        $query = "SELECT * FROM vehicule WHERE id_vehicule = :id_vehicule";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute(['id_vehicule' => $id_vehicule]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+    // public function getVehiculeById($id_vehicule) {
+    //     $query = "SELECT * FROM vehicule WHERE id_vehicule = :id_vehicule";
+    //     $stmt = $this->db->prepare($query);
+    //     $stmt->execute(['id_vehicule' => $id_vehicule]);
+    //     return $stmt->fetch(PDO::FETCH_ASSOC);
+    // }
+
+    public function getvehicule() {
+        try {
+            $sql = "SELECT * FROM vehicule";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Error retrieving categories: " . $e->getMessage();
+            return [];
+        }
     }
 
     // Récupérer tous les véhicules d'une catégorie donnée
@@ -22,33 +34,34 @@ class Vehicule {
         $stmt->execute(['id_categorie' => $id_categorie]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
 
     // Ajouter un véhicule dans la base de données
-    public function addVehicule($marque, $modele, $prix, $id_categorie, $image) {
-        $query = "INSERT INTO vehicule (marque, modele, prix, id_categorie, image) 
-                  VALUES (:marque, :modele, :prix, :id_categorie, :image)";
+    public function addVehicule($marque, $modele, $prix, $id_categorie) {
+        $query = "INSERT INTO vehicule (marque, madele, prix, id_categorie) 
+                  VALUES (:marque, :madele, :prix, :id_categorie)";
         $stmt = $this->db->prepare($query);
         $stmt->execute([
             'marque' => $marque,
-            'modele' => $modele,
+            'madele' => $modele,
             'prix' => $prix,
-            'id_categorie' => $id_categorie,
-            'image' => $image
+            'id_categorie' => $id_categorie
+            
         ]);
     }
 
     // Mettre à jour un véhicule
-    public function updateVehicule($id_vehicule, $marque, $modele, $prix, $id_categorie, $image) {
-        $query = "UPDATE vehicule SET marque = :marque, modele = :modele, prix = :prix, 
-                  id_categorie = :id_categorie, image = :image WHERE id_vehicule = :id_vehicule";
+    public function updateVehicule($id_vehicule, $marque, $modele, $prix, $id_categorie) {
+        $query = "UPDATE vehicule SET marque = :marque, madele = :madele, prix = :prix, 
+                  id_categorie = :id_categorie WHERE id_vehicule = :id_vehicule";
         $stmt = $this->db->prepare($query);
         $stmt->execute([
             'id_vehicule' => $id_vehicule,
             'marque' => $marque,
-            'modele' => $modele,
+            'madele' => $modele,
             'prix' => $prix,
             'id_categorie' => $id_categorie,
-            'image' => $image
+            
         ]);
     }
 
