@@ -2,27 +2,26 @@
 include './conexion.php';
 require './../class/vehicule.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Récupérer les données du formulaire et les sécuriser
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $marque = htmlspecialchars($_POST['marque']);
     $modele = htmlspecialchars($_POST['madele']);
     $prix = htmlspecialchars($_POST['prix']);
-    $id_categorie = htmlspecialchars($_POST['id_categorie']);
+    $id_categorie = $_POST['id_categorie'];
 
-    // Vérifier que tous les champs sont remplis
-    if (!empty($marque) && !empty($modele) && !empty($prix) && !empty($id_categorie)) {
-        // Créer une instance de la base de données
+    $image = $_FILES['image'];
+    $upload = "uploads/";
+    $images = $upload . basename($image["name"]);
+
+    if (move_uploaded_file($image["tmp_name"], $images)) {
         $db = new Database();
         $vehicule = new Vehicule($db);
 
-        // Appeler la méthode pour ajouter le véhicule
-        $vehicule->addVehicule($marque, $modele, $prix, $id_categorie);
-
-        // Rediriger vers le tableau de bord après l'ajout
+        $vehicule->addVehicule($marque, $modele, $prix, $id_categorie, $images);
         header("Location: dashbord.php");
         exit();
     } else {
-        echo "Veuillez remplir tous les champs.";
+        echo "Erreur lors du téléchargement de l'image.";
     }
 }
+
 ?>
