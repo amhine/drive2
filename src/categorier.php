@@ -60,56 +60,16 @@ $categories = $categorie->getCategories();
             <a href="avis.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">avis</a>
         </div>
     </nav>
-    <!-- <div class="flex flex-wrap justify-center gap-6"> -->
-        <!-- Card 1 -->
-        <!-- <a href="/fr-fr/p/location-voiture" class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105">
-            <h3 class="text-lg font-bold text-gray-900 mb-2">Voiture</h3>
-            <p class="text-sm text-gray-600 mb-4">Faites votre choix parmi nos véhicules compactes et économiques</p>
-            <div class="mt-auto">
-            <img src="https://images.ctfassets.net/wmdwnw6l5vg5/71jz89dFBIdA9KHrLh8T0h/17b4d734873752637d3f5dd770838f0b/city_car_fr.png" alt="vehicle-type-car" class="w-32 h-24 object-cover mx-auto">
-            <span class="mt-4 block text-blue-600 font-semibold hover:underline">Voir plus</span>
-            </div>
-        </a> -->
-
-        <!-- Card 2 -->
-        <!-- <a href="/fr-fr/p/location-voiture/flotte/type/electrique" class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105">
-            <h3 class="text-lg font-bold text-gray-900 mb-2">Électrique / Hybride</h3>
-            <p class="text-sm text-gray-600 mb-4">Découvrez notre gamme de voitures électriques et hybrides</p>
-            <div class="mt-auto">
-            <img src="https://images.ctfassets.net/wmdwnw6l5vg5/7eSknBlxG6vxlTW1aPj3Ao/26ad4a20195d62136c47061ae6bca45e/unnamed__4_.png" alt="zoe-hp" class=" h-24 w-32 object-cover mx-auto">
-            <span class="mt-4 block text-blue-600 font-semibold hover:underline">Voir plus</span>
-            </div>
-        </a> -->
-
-        <!-- Card 3 -->
-        <!-- <a href="/fr-fr/p/location-voiture/flotte/type/premium" class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105">
-            <h3 class="text-lg font-bold text-gray-900 mb-2">Premium</h3>
-            <p class="text-sm text-gray-600 mb-4">Découvrez les plus prestigieuses grâce à notre flotte Premium</p>
-            <div class="mt-auto">
-            <img src="https://images.ctfassets.net/wmdwnw6l5vg5/FKkhunbxg0hIIHkl7tOkM/fd6d1f74973199ea34f4f88d62a8408a/fr.png" alt="vehicle-type-luxury" class="w-36 h-24 object-cover mx-auto">
-            <span class="mt-4 block text-blue-600 font-semibold hover:underline">Voir plus</span>
-            </div>
-        </a> -->
-
-        <!-- Card 4 -->
-        <!-- <a href="/fr-fr/p/location-utilitaire" class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105">
-            <h3 class="text-lg font-bold text-gray-900 mb-2">Utilitaire</h3>
-            <p class="text-sm text-gray-600 mb-4">Faites votre choix parmi notre vaste gamme de modèles</p>
-            <div class="mt-auto">
-            <img src="https://images.ctfassets.net/wmdwnw6l5vg5/7MXwlGGHdrV8aNmF2XQLED/52bcd78865a30f0ea5c8ec8cfd5bb360/Design_sans_titre__60_-removebg-preview.png" alt="vehicle-type-van" class=" h-24 w-36 object-cover mx-auto">
-            <span class="mt-4 block text-blue-600 font-semibold hover:underline">Voir plus</span>
-            </div>
-        </a> -->
-    <!-- </div> -->
+   
 
     <div class="flex flex-wrap justify-center gap-6">
         <?php foreach ($categories as $cat): ?>
             <a href="categorie_details.php?id=<?php echo $cat['id_categorie']; ?>" 
             class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105 w-1/2 md:w-1/3 lg:w-1/4">
-                <h3 class="text-lg font-bold text-gray-900 mb-2"><?php echo htmlspecialchars($cat['nom']); ?></h3>
-                <p class="text-sm text-gray-600 mb-4"><?php echo htmlspecialchars($cat['description']); ?></p>
+                <h3 class="text-lg font-bold text-gray-900 mb-2"><?php echo ($cat['nom']); ?></h3>
+                <p class="text-sm text-gray-600 mb-4"><?php echo ($cat['description']); ?></p>
                 <div class="mt-auto">
-                    <img src="<?php echo htmlspecialchars($cat['image']); ?>" alt="vehicle-type-<?php echo strtolower($cat['nom']); ?>" class="w-36 h-24 object-cover mx-auto">
+                    <img src="<?php echo ($cat['image']); ?>" alt="vehicle-type-<?php echo strtolower($cat['nom']); ?>" class="w-36 h-24 object-cover mx-auto">
                     <span class="mt-4 block text-blue-600 font-semibold hover:underline">Voir plus</span>
                 </div>
             </a>

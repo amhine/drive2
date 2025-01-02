@@ -117,10 +117,10 @@ $vehicules = $vehicule->getvehicule() ;
 
                             <?php foreach ($categories as $cat): ?>
                                 <div class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105">
-                                    <h3 class="text-lg font-bold text-gray-900 mb-2"><?php echo htmlspecialchars($cat['nom']); ?></h3>
-                                    <p class="text-sm text-gray-600 mb-4"><?php echo htmlspecialchars($cat['description']); ?></p>
+                                    <h3 class="text-lg font-bold text-gray-900 mb-2"><?php echo ($cat['nom']); ?></h3>
+                                    <p class="text-sm text-gray-600 mb-4"><?php echo ($cat['description']); ?></p>
                                     <div class="mt-auto">
-                                        <img src="<?php echo htmlspecialchars($cat['image']); ?>" alt="vehicle-type-<?php echo strtolower($cat['nom']); ?>" class="w-36 h-24 object-cover mx-auto">
+                                        <img src="<?php echo ($cat['image']); ?>" alt="vehicle-type-<?php echo strtolower($cat['nom']); ?>" class="w-36 h-24 object-cover mx-auto">
                                         <span class="mt-4 block text-blue-600 font-semibold hover:underline">Voir plus</span>
                                     </div>
 
@@ -149,11 +149,11 @@ $vehicules = $vehicule->getvehicule() ;
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             <?php foreach ($vehicules as $vehicule): ?>
                             <div class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105">
-                                <img src="<?php echo htmlspecialchars($vehicule['image']); ?>" alt="vehicle-<?php echo strtolower($vehicule['marque']); ?>" class="w-36 h-24 object-cover mx-auto mb-4">
+                                <img src="<?php echo ($vehicule['image']); ?>" alt="vehicle-<?php echo strtolower($vehicule['marque']); ?>" class="w-36 h-24 object-cover mx-auto mb-4">
                                 
-                                <h3 class="text-lg font-bold text-gray-900 mb-2"><?php echo htmlspecialchars($vehicule['marque'] . ' ' . $vehicule['madele']); ?></h3>
+                                <h3 class="text-lg font-bold text-gray-900 mb-2"><?php echo ($vehicule['marque'] . ' ' . $vehicule['madele']); ?></h3>
                                 
-                                <p class="text-sm text-gray-600 mb-4">Prix : <?php echo htmlspecialchars($vehicule['prix']); ?> DH</p>
+                                <p class="text-sm text-gray-600 mb-4">Prix : <?php echo ($vehicule['prix']); ?> DH</p>
                                 
                                 <div class="mt-auto flex gap-4">
                                     <a href="modifier_vehicule.php?id_vehicule=<?php echo $vehicule['id_vehicule']; ?>" class="text-white bg-yellow-500 rounded-lg px-4 py-2 hover:bg-yellow-600 transition-colors">

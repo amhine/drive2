@@ -55,18 +55,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="px-8 py-6">
                     <div class="mb-6">
                         <label class="block text-gray-700 font-semibold mb-2" for="nom">Nom :</label>
-                        <input type="text" id="nom" name="nom" value="<?php echo htmlspecialchars($cat['nom']); ?>" class="w-full p-3 border border-gray-300 rounded-lg" required>
+                        <input type="text" id="nom" name="nom" value="<?php echo ($cat['nom']); ?>" class="w-full p-3 border border-gray-300 rounded-lg" required>
                     </div>
                     <div class="mb-6">
                         <label class="block text-gray-700 font-semibold mb-2" for="description">Description :</label>
-                        <input class="appearance-none border border-gray-400 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent" id="description" name="description" type="text" placeholder="Description" required value=" <?php echo htmlspecialchars($cat['description']); ?>">
+                        <input class="appearance-none border border-gray-400 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent" id="description" name="description" type="text" placeholder="Description" required value=" <?php echo ($cat['description']); ?>">
                     </div>
                     <div class="mb-6">
                         <label class="block text-gray-700 font-semibold mb-2" for="url" id="photo">Images :</label>
-                        <input type="text" id="image" name="image" value="<?php echo htmlspecialchars($cat['image']); ?>" class="w-full p-3 border border-gray-300 rounded-lg" required>
+                        <input type="text" id="image" name="image" value="<?php echo ($cat['image']); ?>" class="w-full p-3 border border-gray-300 rounded-lg" required>
                     </div>
                    
-
                    
 
                     <div class="flex justify-between mt-8">
