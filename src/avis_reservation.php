@@ -2,29 +2,54 @@
 include './conexion.php';
 require './../class/avis.php';
 
-session_start(); 
+require './../class/reservation.php';
+require './../class/vehicule.php';
 
-$id_user = $_SESSION['id_user'] ?? null; 
+session_start();
 
-$id_reservation = $_POST['id_reservation'] ?? null; 
+// Vérification si l'utilisateur est connecté
+if (!isset($_SESSION['id_user'])) {
+    die("Erreur : Vous devez être connecté pour donner un avis.");
+}
+$id_user = $_SESSION['id_user'];
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['avis'])) {
+    echo "aa";
+    $idRes= $_GET['id_reservation'] ?? null;
+    $idVeh = $_GET['id_vehicule'] ?? null;
+    
+    if (!$idRes || !$idVeh || !$id_user) {
+        die('Erreur : Données manaquantes.');
+    }
 
-$id_vehicule = $_GET['id_vehicule'] ?? null;
-
-if ($id_vehicule === null) {
-    die("Erreur : ID du véhicule manquant.");
 }
 
-if (!$id_user) {
-    die('Erreur : ID du user non transmis.');
-}
 
-if (!$id_reservation) {
-    die('Erreur : ID du reservation non transmis.');
-}
+// Vérification si le formulaire est soumis
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Récupération des données du formulaire
+    $id_reservation = $_POST['idRes'] ?? null;
+    $id_vehicule = $_POST['idVeh'] ?? null;
+    $note = $_POST['note'] ?? null;
+  
+    // Vérification des données
+    if (!$id_reservation || !$id_vehicule || !$note) {
+        die("Erreur : Données POST manquantes.");
+    }
 
-$db = new Database();
-$avis = new Avis($db); 
-$aviss = $avis->getAllAvis();
+    // Connexion à la base de données
+    $db = new Database();
+    $avis = new Avis($db);
+    $res = $avis->ajouterAvis($note, $id_vehicule, $id_user);
+    // print_r( $res);
+    // Insertion de l'avis
+    if (1) {
+        echo "Avis ajouté avec succès.";
+        header('Location: avis_reservation.php');
+        exit;
+    } else {
+        die("Erreur lors de l'ajout de l'avis.");
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -37,58 +62,34 @@ $aviss = $avis->getAllAvis();
     <link rel="stylesheet" href="output.css">
 </head>
 <body>
-    <!-- <form action="script_avis.php" method="POST" enctype="multipart/form-data" id="addavisForm">
-        <div class="max-w-[800px] w-full max-h-[500px] bg-white rounded-lg shadow-lg ">
-            <div class="px-8 py-4 bg-blue-400 text-white">
-                <h1 class="flex justify-center font-bold text-white text-3xl">Ajouter un Avis</h1>
+<form action="" method="POST" enctype="multipart/form-data" id="addavisForm">
+    <div class="max-w-[800px] w-full max-h-[500px] bg-white rounded-lg shadow-lg">
+        <div class="px-8 py-4 bg-blue-400 text-white">
+            <h1 class="flex justify-center font-bold text-white text-3xl">Ajouter un Avis</h1>
+        </div>
+        <div class="px-8 py-6">
+            <div class="mb-6">
+                <label class="block text-gray-700 font-semibold mb-2" for="note">Note (1 à 5) :</label>
+                <select name="note" class="appearance-none border border-gray-400 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent" id="note" name="note" required>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
             </div>
-            <div class="px-8 py-6">
-                
-                <div class="mb-6">
-                    <label class="block text-gray-700 font-semibold mb-2" for="note">Note (1 à 5) :</label>
-                    <select class="appearance-none border border-gray-400 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent" id="note" name="note" required>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                </div>
 
-                <input type="hidden" name="id_reservation" value="<?php echo $id_reservation; ?>">
-                <input type="hidden" name="id_vehicule" value="<?php echo $id_vehicule; ?>">
-                <input type="hidden" name="id_user" value="<?php echo $id_user; ?>">
+            <!-- Champs cachés pour passer les valeurs -->
+            <input type="hidden" name="idRes" value="<?= $idRes; ?>">
+            <input type="hidden" name="idVeh" value="<?= $idVeh; ?>">
+            <input type="hidden" name="id_user" value="<?= $id_user; ?>">
 
-                <div class="flex justify-between mt-8">
-                    <a href="vehicule.php" class="text-white bg-red-600 w-40 rounded-lg py-3 hover:bg-red-800 cursor-pointer flex justify-center">Annuler</a>
-                    <button type="submit" class="text-white bg-blue-600 w-40 rounded-lg py-3 hover:bg-blue-800 cursor-pointer">Ajouter</button>
-                </div>
+            <div class="flex justify-between mt-8">
+                <a href="vehicule.php" class="text-white bg-red-600 w-40 rounded-lg py-3 hover:bg-red-800 cursor-pointer flex justify-center">Annuler</a>
+                <button type="submit" class="text-white bg-blue-600 w-40 rounded-lg py-3 hover:bg-blue-800 cursor-pointer">Ajouter</button>
             </div>
         </div>
-    </form> -->
-
-    <form action="script_avis.php" method="POST">
-    <!-- Autres champs du formulaire -->
-
-    <!-- Note -->
-    <select name="note" required>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-    </select>
-
-    <!-- Champs cachés -->
-    <input type="hidden" name="id_vehicule" value="<?php echo $id_vehicule; ?>">
-
-
-    <input type="hidden" name="id_reservation" value="<?php echo $id_reservation; ?>">
-    <input type="hidden" name="id_user" value="<?php echo $_SESSION['id_user']; ?>">
-
-    <button type="submit">Ajouter</button>
+    </div>
 </form>
-
 </body>
 </html>
-

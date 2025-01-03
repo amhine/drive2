@@ -46,5 +46,22 @@ class Utilisateur {
         }
         return "Email non trouvé";
     }
+
+
+    public function countRole($roleName) {
+        $sql = "SELECT COUNT(*) AS role_count 
+                FROM utilisateur u 
+                INNER JOIN role r ON u.id_role = r.id_role 
+                WHERE r.nom_role = ?";
+        $stmt = $this->db->prepare($sql); 
+        $stmt->execute([$roleName]);      
+    
+        if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            return $row['role_count'];
+        }
+        return 0;
+    }
+    
+    
 }
 ?>

@@ -87,5 +87,18 @@ class Reservation {
             return false;
         }
     }
+
+    public function countReservation() {
+        $sql = "SELECT COUNT(*) AS reserv_count 
+                FROM reservation";  
+        $stmt = $this->db->prepare($sql); 
+        $stmt->execute();  
+        
+        if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            return $row['reserv_count']; 
+        }
+        return 0;  
+    }
+    
 }
 ?>
