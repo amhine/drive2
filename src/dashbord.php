@@ -180,7 +180,7 @@ $Reservations = $Reservation->getAllReservations();
 
 
                 <div class="reservation-card bg-white border border-gray-300 rounded-lg shadow-lg p-6 hover:shadow-xl transition-transform transform hover:-translate-y-2">
-                    <h1 class="text-center text-4xl font-bold text-blue-400 mt-4 mb-4">Liste des Reservation</h1>
+                    <h1 class="text-center text-4xl font-bold text-blue-400 mt-4 mb-4">Liste des Reservations</h1>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             <?php foreach ($Reservations as $Reservation): ?>
@@ -202,9 +202,7 @@ $Reservations = $Reservation->getAllReservations();
                                         
                                 </form>
                                 <div class="mt-auto flex gap-4">
-                                    <a href="modifier_reservation.php?id_reservation=<?php echo $Reservation['id_reservation']; ?>" class="text-white bg-yellow-500 rounded-lg px-4 py-2 hover:bg-yellow-600 transition-colors">
-                                        Modifier
-                                    </a>
+                                    
                                     
                                     <form action="supprimer_reservation.php" method="POST">
                                         <input type="hidden" name="id_reservation" value="<?php echo $Reservation['id_reservation']; ?>">
