@@ -73,13 +73,13 @@ $vehicules = $vehicule->getvehicule();
                  
                 <form action="reservation_vehicule.php" method="POST">
     
-    <input type="hidden" name="id_vehicule" value="<?php echo $vehicule['id_vehicule']; ?>">
-    
-    <input type="hidden" name="id_user" value="<?php echo $_SESSION['id_user']; ?>"> 
-    <button type="submit" class="text-white bg-red-600 rounded-lg w-56 h-10 text-lg font-bold hover:bg-red-700 transition-colors">
-        Reserved
-    </button>
-</form>
+                    <input type="hidden" name="id_vehicule" value="<?php echo $vehicule['id_vehicule']; ?>">
+                    
+                    <input type="hidden" name="id_user" value="<?php echo $_SESSION['id_user']; ?>"> 
+                    <button type="submit" class="text-white bg-red-600 rounded-lg w-56 h-10 text-lg font-bold hover:bg-red-700 transition-colors">
+                        Reserved
+                    </button>
+                </form>
 
             </div>
             <?php endforeach; ?>
