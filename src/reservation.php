@@ -1,13 +1,13 @@
 <?php
 include './conexion.php';
-require './../class/categorier.php';
+require './../class/reservation.php';
 require './../class/vehicule.php';
 
 $db = new Database();
-$categorie = new Categorie($db); 
-$categories = $categorie->getCategories();
+$Reservation= new Reservation($db); 
 $vehicule = new Vehicule($db); 
 $vehicules = $vehicule->getvehicule(); 
+$Reservations = $Reservation->getAllReservations();
 ?>
 
 <!DOCTYPE html>
@@ -59,25 +59,25 @@ $vehicules = $vehicule->getvehicule();
             <a href="reservation.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">reservation</a>
             <a href="avis.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">avis</a>
         </div>
- </nav>
+</nav>
 
     <div class="reservation-card bg-white border border-gray-300 rounded-lg shadow-lg p-6 hover:shadow-xl transition-transform transform hover:-translate-y-2">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid gap-6">
-            <?php foreach ($vehicules as $vehicule): ?>
+            <?php foreach ($Reservations as $Reservation): ?>
             <div class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105">
-                <img src="<?php echo ($vehicule['image']); ?>" alt="vehicle-<?php echo strtolower($vehicule['marque']); ?>" class="w-36 h-24 object-cover mx-auto mb-4">
                 
-                <h3 class="text-lg font-bold text-gray-900 mb-2"><?php echo ($vehicule['marque'] . ' ' . $vehicule['madele']); ?></h3>
                 
-                <p class="text-sm text-gray-600 mb-4">Prix : <?php echo ($vehicule['prix']); ?> DH</p>
+                <h3 class="text-lg font-bold text-gray-900 mb-2"><?php echo ($Reservation['date'] ); ?></h3>
+                <p class="text-sm text-gray-600 mb-4">Lieu : <?php echo ($Reservation['lieu']); ?> DH</p>
+                <p class="text-sm text-gray-600 mb-4">Prix : <?php echo ($Reservation['prix']); ?> DH</p>
                  
-                <form action="reservation_vehicule.php" method="POST">
-    
-    <input type="hidden" name="id_vehicule" value="<?php echo $vehicule['id_vehicule']; ?>">
-    
+                <form action="avis_reservation.php" method="POST">
+  
+    <input type="hidden" name="id_reservation" value="<?php echo $Reservation['id_reservation']; ?>">
+   
     <input type="hidden" name="id_user" value="<?php echo $_SESSION['id_user']; ?>"> 
     <button type="submit" class="text-white bg-red-600 rounded-lg w-56 h-10 text-lg font-bold hover:bg-red-700 transition-colors">
-        Reserved
+        votre avis
     </button>
 </form>
 
