@@ -2,10 +2,12 @@
 class Reservation {
     private $db;
 
+    // Constructeur pour initialiser la connexion à la base de données
     public function __construct($db) {
         $this->db = $db;
     }
 
+    // Ajouter une réservation
     public function addReservation($date_reservation, $prix, $lieu, $id_user, $id_vehicule) {
         try {
             $query = "INSERT INTO reservation (date_reservation, prix, lieu, id_user, id_vehicule)
@@ -18,13 +20,14 @@ class Reservation {
                 'id_user' => $id_user,
                 'id_vehicule' => $id_vehicule
             ]);
-            return $this->db->lastInsertId(); 
+            return $this->db->lastInsertId(); // Retourne l'ID de la réservation ajoutée
         } catch (PDOException $e) {
             echo "Erreur lors de l'ajout de la réservation : " . $e->getMessage();
             return false;
         }
     }
 
+    // Récupérer toutes les réservations
     public function getAllReservations() {
         try {
             $query = "SELECT * FROM reservation";
