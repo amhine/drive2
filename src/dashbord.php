@@ -1,11 +1,13 @@
 <?php
 
 include './conexion.php';
+require './../class/utilisateur.php';
 require './../class/categorier.php';
 require './../class/vehicule.php';
 require './../class/reservation.php';
 
 $db = new Database();
+$utilisateur = new Utilisateur($db);
 $categorie = new Categorie($db); 
 $categories = $categorie->getCategories();
 $vehicule = new Vehicule($db); 
@@ -94,21 +96,19 @@ $Reservations = $Reservation->getAllReservations();
             </aside>
 
             <main class="flex-1 p-4">
-                <div class="flex flex-col lg:flex-row gap-4 mb-6">
-                    <div class="flex-1 bg-blue-400 border border-indigo-200 rounded-xl p-6 animate-fade-in">
+                <div class="flex flex-col lg:flex-row gap-4 mb-6 ">
+                    <div class="flex-1 bg-blue-400 border border-indigo-200 rounded-xl p-6 animate-fade-in h-32">
                         <h2 class="text-sm md:text-xl text-white font-bold">
-                            Welcome Dash
+                            Welcome Reservation 
                         </h2>
-                        
+                        <span class="text-sm md:text-xl text-white font-bold  "><?php echo $Reservation->countReservation(); ?></span>
                     </div>
 
                     <div class="flex-1 bg-blue-400 border border-blue-200 rounded-xl p-6 animate-fade-in">
                         <h2 class="text-sm md:text-xl text-white font-bold">
                             Clients inscrits <br></strong>
                         </h2>
-                        <a href="#" class="inline-block mt-8 px-8 py-2 rounded-full text-xl font-bold text-blue-400 bg-white hover:bg-amber-500 transition-transform duration-300 hover:scale-105">
-                            See 
-                        </a>
+                        <span class="text-sm md:text-xl text-white font-bold  "><?php echo $utilisateur->countRole('Utilisateur'); ?></span>
                     </div>
                 </div>
 

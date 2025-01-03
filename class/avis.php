@@ -19,7 +19,7 @@ class Avis {
         
         $query = "INSERT INTO `avis`( `note`, `id_vehicule`, `id_user`)VALUES ($note, $id_vehicule, $id_user)";
         
-        return $this->db->exec($query);
+        return $this->db->query($query);
     }
 
     // Méthode pour obtenir les avis d'un véhicule spécifique
