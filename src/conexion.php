@@ -14,11 +14,15 @@ class Database {
             echo "Connection échouée: " . $e->getMessage();
         }
     }
+    public function getConnection() {
+        return $this->connect;
+    }
     public function query($sql) {
         return $this->connect->query($sql);
     }
     public function prepare($sql) {
         return $this->connect->prepare($sql);
     }
+   
 }
 ?>

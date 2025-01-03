@@ -50,7 +50,7 @@ $categories = $categorie->getCategories();
                 <div class="mb-6">
         <label class="block text-gray-700 font-semibold mb-2" for="image">Image :</label>
         <input type="file" name="image" id="image" class="w-full p-2 rounded-md bg-gray-100" required>
-    </div>
+        </div>
                 
                 <div class="flex justify-between mt-8">
                     <a href="dashbord.php" class="text-white bg-red-600 w-40 rounded-lg py-3 hover:bg-red-800 cursor-pointer flex justify-center">Annuler</a>
