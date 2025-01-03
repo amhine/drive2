@@ -68,18 +68,23 @@ $Reservations = $Reservation->getAllReservations();
                 
                 
                 <h3 class="text-lg font-bold text-gray-900 mb-2"><?php echo ($Reservation['date'] ); ?></h3>
-                <p class="text-sm text-gray-600 mb-4">Lieu : <?php echo ($Reservation['lieu']); ?> DH</p>
+                <p class="text-sm text-gray-600 mb-4">Lieu : <?php echo ($Reservation['lieu']); ?> </p>
                 <p class="text-sm text-gray-600 mb-4">Prix : <?php echo ($Reservation['prix']); ?> DH</p>
                  
                 <form action="avis_reservation.php" method="POST">
   
-    <input type="hidden" name="id_reservation" value="<?php echo $Reservation['id_reservation']; ?>">
-   
-    <input type="hidden" name="id_user" value="<?php echo $_SESSION['id_user']; ?>"> 
-    <button type="submit" class="text-white bg-red-600 rounded-lg w-56 h-10 text-lg font-bold hover:bg-red-700 transition-colors">
-        votre avis
-    </button>
-</form>
+                        
+
+                    <input type="hidden" name="id_reservation" value="<?php echo $Reservation['id_reservation']; ?>">
+
+                    <input type="hidden" name="id_user" value="<?php echo $_SESSION['id_user']; ?>">
+
+                    <input type="hidden" name="id_vehicule" value="<?php echo $Reservation['id_vehicule']; ?>">
+
+                        <button type="submit" class="text-white bg-red-600 rounded-lg w-56 h-10 text-lg font-bold hover:bg-red-700 transition-colors">
+                            votre avis
+                        </button>
+                </form>
 
             </div>
             <?php endforeach; ?>
