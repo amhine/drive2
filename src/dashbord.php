@@ -3,12 +3,15 @@
 include './conexion.php';
 require './../class/categorier.php';
 require './../class/vehicule.php';
+require './../class/reservation.php';
 
 $db = new Database();
 $categorie = new Categorie($db); 
 $categories = $categorie->getCategories();
 $vehicule = new Vehicule($db); 
 $vehicules = $vehicule->getvehicule() ;
+$Reservation= new Reservation($db); 
+$Reservations = $Reservation->getAllReservations();
 
 ?>
 <!DOCTYPE html>
@@ -114,6 +117,7 @@ $vehicules = $vehicule->getvehicule() ;
                 <div class="reservations-container container mx-auto flex flex-col gap-8 py-8">
                     <div class="reservation-card bg-white border border-gray-300 rounded-lg shadow-lg p-6 hover:shadow-xl transition-transform transform hover:-translate-y-2">
                         <h1 class="text-center text-4xl font-bold text-blue-400 mt-4 mb-4">Nouvelle categorier</h1>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
                             <?php foreach ($categories as $cat): ?>
                                 <div class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105">
@@ -140,7 +144,7 @@ $vehicules = $vehicule->getvehicule() ;
                                     </div>
                                 </div>
                             <?php endforeach; ?>  
-
+                        </div>
                 </div>
 
                 <div class="reservation-card bg-white border border-gray-300 rounded-lg shadow-lg p-6 hover:shadow-xl transition-transform transform hover:-translate-y-2">
@@ -174,6 +178,47 @@ $vehicules = $vehicule->getvehicule() ;
 
                 </div>
 
+
+                <div class="reservation-card bg-white border border-gray-300 rounded-lg shadow-lg p-6 hover:shadow-xl transition-transform transform hover:-translate-y-2">
+                    <h1 class="text-center text-4xl font-bold text-blue-400 mt-4 mb-4">Liste des Reservation</h1>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <?php foreach ($Reservations as $Reservation): ?>
+                            <div class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105">
+                            <h3 class="text-lg font-bold text-gray-900 mb-2"><?php echo ($Reservation['date'] ); ?></h3>
+                                <p class="text-sm text-gray-600 mb-4">Lieu : <?php echo ($Reservation['lieu']); ?> </p>
+                                <p class="text-sm text-gray-600 mb-4">Prix : <?php echo ($Reservation['prix']); ?> DH</p>
+                                
+                                <form action="avis_reservation.php" method="POST">
+                
+                                        
+
+                                    <input type="hidden" name="id_reservation" value="<?php echo $Reservation['id_reservation']; ?>">
+
+                                    <input type="hidden" name="id_user" value="<?php echo $_SESSION['id_user']; ?>">
+
+                                    <input type="hidden" name="id_vehicule" value="<?php echo $Reservation['id_vehicule']; ?>">
+
+                                        
+                                </form>
+                                <div class="mt-auto flex gap-4">
+                                    <a href="modifier_reservation.php?id_reservation=<?php echo $Reservation['id_reservation']; ?>" class="text-white bg-yellow-500 rounded-lg px-4 py-2 hover:bg-yellow-600 transition-colors">
+                                        Modifier
+                                    </a>
+                                    
+                                    <form action="supprimer_reservation.php" method="POST">
+                                        <input type="hidden" name="id_reservation" value="<?php echo $Reservation['id_reservation']; ?>">
+                                        <button type="submit" class="text-white bg-red-600 rounded-lg px-4 py-2 hover:bg-red-700 transition-colors">
+                                            Supprimer
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                    </div>
+
+                </div>
             </main>
         </div> 
       
