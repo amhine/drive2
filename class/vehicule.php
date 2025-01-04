@@ -84,5 +84,20 @@ class Vehicule {
         $stmt = $this->db->prepare($query);
         $stmt->execute(['id_vehicule' => $id_vehicule]);
     }
+
+    public function getvehiculee($start_from, $limit) {
+        try {
+            $sql = "SELECT * FROM vehicule LIMIT :start_from, :limit";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':start_from', $start_from, PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Error retrieving vehicles: " . $e->getMessage();
+            return [];
+        }
+    }
+    
 }
 ?>

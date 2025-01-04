@@ -1,14 +1,31 @@
+
 <?php
 include './conexion.php';
 require './../class/categorier.php';
 require './../class/vehicule.php';
 
 $db = new Database();
-$categorie = new Categorie($db); 
+$categorie = new Categorie($db);
 $categories = $categorie->getCategories();
-$vehicule = new Vehicule($db); 
-$vehicules = $vehicule->getvehicule(); 
+$vehicule = new Vehicule($db);
+
+$limit = 4;
+
+$query = "SELECT COUNT(*) as total FROM vehicule";
+$stmt = $db->connect->prepare($query);
+$stmt->execute();
+$total_records = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+
+$total_pages = ceil($total_records / $limit);
+
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($page < 1) $page = 1;  
+$start_from = ($page - 1) * $limit;
+$vehicules = $vehicule->getvehiculee($start_from, $limit);
 ?>
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -19,9 +36,11 @@ $vehicules = $vehicule->getvehicule();
     
     <link rel="stylesheet" href="input.css">
     <link rel="stylesheet" href="output.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
 </head>
 <body>
-<nav class="bg-gray-800 mb-12 ">
+    <nav class="bg-gray-800 mb-12 ">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between h-16">
             <!-- Logo -->
@@ -59,32 +78,56 @@ $vehicules = $vehicule->getvehicule();
             <a href="reservation.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">reservation</a>
             <a href="avis.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">avis</a>
         </div>
- </nav>
+    </nav>
 
     <div class="reservation-card bg-white border border-gray-300 rounded-lg shadow-lg p-6 hover:shadow-xl transition-transform transform hover:-translate-y-2">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid gap-6">
             <?php foreach ($vehicules as $vehicule): ?>
             <div class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105">
                 <img src="<?php echo ($vehicule['image']); ?>" alt="vehicle-<?php echo strtolower($vehicule['marque']); ?>" class="w-36 h-24 object-cover mx-auto mb-4">
-                
                 <h3 class="text-lg font-bold text-gray-900 mb-2"><?php echo ($vehicule['marque'] . ' ' . $vehicule['madele']); ?></h3>
-                
                 <p class="text-sm text-gray-600 mb-4">Prix : <?php echo ($vehicule['prix']); ?> DH</p>
-                 
                 <form action="reservation_vehicule.php" method="POST">
-    
                     <input type="hidden" name="id_vehicule" value="<?php echo $vehicule['id_vehicule']; ?>">
-                    
                     <input type="hidden" name="id_user" value="<?php echo $_SESSION['id_user']; ?>"> 
                     <button type="submit" class="text-white bg-red-600 rounded-lg w-56 h-10 text-lg font-bold hover:bg-red-700 transition-colors">
                         Reserved
                     </button>
                 </form>
-
             </div>
             <?php endforeach; ?>
         </div>
     </div>
+   
+       <!-- Pagination -->
+    <div class="flex justify-center items-center space-x-2 mt-8">
+        
+        <?php if ($page > 1): ?>
+            <a href="?page=<?php echo $page - 1; ?>" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition-colors">
+                <i class="fa-solid fa-chevron-left"></i>
+            </a>
+        <?php else: ?>
+            <span class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md cursor-not-allowed">
+                <i class="fa-solid fa-chevron-left"></i>
+            </span>
+        <?php endif; ?>
+
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+            <a href="?page=<?php echo $i; ?>" class="px-4 py-2 <?php echo $i == $page ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'; ?> rounded-md hover:bg-blue-500 hover:text-white transition-colors">
+                <?php echo $i; ?>
+            </a>
+        <?php endfor; ?>
+        <?php if ($page < $total_pages): ?>
+            <a href="?page=<?php echo $page + 1; ?>" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition-colors">
+                <i class="fa-solid fa-chevron-right"></i>
+            </a>
+        <?php else: ?>
+            <span class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md cursor-not-allowed">
+                <i class="fa-solid fa-chevron-right"></i>
+            </span>
+        <?php endif; ?>
+    </div>
+
 
     <footer class="bg-gray-800 text-gray-300 py-10 mt-12">
         <div class="container mx-auto px-4">
