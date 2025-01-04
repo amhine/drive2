@@ -7,13 +7,11 @@ require './../class/vehicule.php';
 
 session_start();
 
-// Vérification si l'utilisateur est connecté
 if (!isset($_SESSION['id_user'])) {
     die("Erreur : Vous devez être connecté pour donner un avis.");
 }
 $id_user = $_SESSION['id_user'];
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['avis'])) {
-    echo "aa";
     $idRes= $_GET['id_reservation'] ?? null;
     $idVeh = $_GET['id_vehicule'] ?? null;
     
@@ -23,28 +21,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['avis'])) {
 
 }
 
-
-// Vérification si le formulaire est soumis
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Récupération des données du formulaire
     $id_reservation = $_POST['idRes'] ?? null;
     $id_vehicule = $_POST['idVeh'] ?? null;
     $note = $_POST['note'] ?? null;
-  
-    // Vérification des données
     if (!$id_reservation || !$id_vehicule || !$note) {
         die("Erreur : Données POST manquantes.");
     }
-
-    // Connexion à la base de données
     $db = new Database();
     $avis = new Avis($db);
     $res = $avis->ajouterAvis($note, $id_vehicule, $id_user);
-    // print_r( $res);
-    // Insertion de l'avis
     if (1) {
-        echo "Avis ajouté avec succès.";
-        header('Location: avis_reservation.php');
+        header('Location: reservation.php');
         exit;
     } else {
         die("Erreur lors de l'ajout de l'avis.");
