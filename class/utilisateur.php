@@ -46,6 +46,7 @@ class Utilisateur {
         }
         return "Email non trouvé";
     }
+    
 
 
     public function countRole($roleName) {
