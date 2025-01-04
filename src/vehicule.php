@@ -1,4 +1,3 @@
-
 <?php
 include './conexion.php';
 require './../class/categorier.php';
@@ -10,21 +9,18 @@ $categories = $categorie->getCategories();
 $vehicule = new Vehicule($db);
 
 $limit = 4;
-
-$query = "SELECT COUNT(*) as total FROM vehicule";
-$stmt = $db->connect->prepare($query);
-$stmt->execute();
-$total_records = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+$id_categorie = isset($_GET['id_categorie']) ? (int)$_GET['id_categorie'] : 0;
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+$total_records = $vehicule->getCount($id_categorie, $search);
 
 $total_pages = ceil($total_records / $limit);
 
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if ($page < 1) $page = 1;  
 $start_from = ($page - 1) * $limit;
-$vehicules = $vehicule->getvehiculee($start_from, $limit);
+
+$vehicules = $vehicule->getVehicules($id_categorie, $search, $start_from, $limit);
 ?>
-
-
 
 
 <!DOCTYPE html>
@@ -32,102 +28,114 @@ $vehicules = $vehicule->getvehiculee($start_from, $limit);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    
+    <title>Véhicules</title>
     <link rel="stylesheet" href="input.css">
     <link rel="stylesheet" href="output.css">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <nav class="bg-gray-800 mb-12 ">
+    <!-- Navigation -->
+    <nav class="bg-gray-800 mb-12">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between h-16">
-            <!-- Logo -->
-            <div class="flex-shrink-0">
-                <a href="index.html" class="text-white text-2xl font-bold">
-                Voi<span class="text-blue-400">Ture</span>
-                </a>
+                <div class="flex-shrink-0">
+                    <a href="index.html" class="text-white text-2xl font-bold">
+                        Voi<span class="text-blue-400">Ture</span>
+                    </a>
+                </div>
+                <div class="md:hidden">
+                    <button id="menu-toggle" class="text-gray-300 focus:outline-none focus:text-white">
+                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                    </button>
+                </div>
+                <div id="menu" class="hidden md:flex space-x-4">
+                    <a href="index.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                    <a href="categorier.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Categories</a>
+                    <a href="vehicule.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Vehicles</a>
+                    <a href="reservation.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Reservations</a>
+                    <a href="avis.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Feedback</a>
+                </div>
             </div>
-            
-            <!-- Hamburger Menu (mobile) -->
-            <div class="md:hidden">
-                <button id="menu-toggle" class="text-gray-300 focus:outline-none focus:text-white">
-                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-                </svg>
-                </button>
-            </div>
-            
-            <!-- Nav Links -->
-            <div id="menu" class="hidden md:flex space-x-4">
-                <a href="index.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
-                <a href="categorier.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">categorier</a>
-                <a href="vehicule.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">vehicule</a>
-                <a href="reservation.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">reservation</a>
-                <a href="avis.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">avis</a>
-            </div>
-            </div>
-        </div>
-    
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-gray-800">
-            <a href="index.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
-            <a href=" categorier.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">categorier</a>
-            <a href="vehicule.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">vehicule</a>
-            <a href="reservation.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">reservation</a>
-            <a href="avis.php" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">avis</a>
         </div>
     </nav>
 
-    <div class="reservation-card bg-white border border-gray-300 rounded-lg shadow-lg p-6 hover:shadow-xl transition-transform transform hover:-translate-y-2">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid gap-6">
-            <?php foreach ($vehicules as $vehicule): ?>
-            <div class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105">
-                <img src="<?php echo ($vehicule['image']); ?>" alt="vehicle-<?php echo strtolower($vehicule['marque']); ?>" class="w-36 h-24 object-cover mx-auto mb-4">
-                <h3 class="text-lg font-bold text-gray-900 mb-2"><?php echo ($vehicule['marque'] . ' ' . $vehicule['madele']); ?></h3>
-                <p class="text-sm text-gray-600 mb-4">Prix : <?php echo ($vehicule['prix']); ?> DH</p>
-                <form action="reservation_vehicule.php" method="POST">
-                    <input type="hidden" name="id_vehicule" value="<?php echo $vehicule['id_vehicule']; ?>">
-                    <input type="hidden" name="id_user" value="<?php echo $_SESSION['id_user']; ?>"> 
-                    <button type="submit" class="text-white bg-red-600 rounded-lg w-56 h-10 text-lg font-bold hover:bg-red-700 transition-colors">
-                        Reserved
-                    </button>
-                </form>
-            </div>
-            <?php endforeach; ?>
+    <!-- Formulaire de recherche -->
+    <div class="flex justify-end my-4 mr-6">
+        <form action="vehicule.php" method="GET" class="flex items-center space-x-2">
+            <input type="text" name="search" id="search" placeholder="Rechercher par modèle" class="px-4 py-2 border border-gray-300 rounded-md" value="<?=($search); ?>">
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                <i class="fa-solid fa-search"></i>
+            </button>
+        </form>
+    </div>
+
+        <!-- Filtrage par catégorie -->
+        <div class="flex justify-center my-4">
+            <form action="vehicule.php" method="GET" class="flex items-center space-x-2">
+                <select id="category-filter" name="id_categorie" class="px-4 py-2 border border-r-teal-950 rounded-md" onchange="this.form.submit()">
+                    <option value="0">Sélectionner une catégorie</option>
+                    <?php foreach ($categories as $categorie): ?>
+                        <option value="<?php echo $categorie['id_categorie']; ?>" <?php echo ($id_categorie == $categorie['id_categorie']) ? 'selected' : ''; ?>>
+                            <?php echo $categorie['nom']; ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            
+            </form>
         </div>
-    </div>
-   
-       <!-- Pagination -->
-    <div class="flex justify-center items-center space-x-2 mt-8">
-        
-        <?php if ($page > 1): ?>
-            <a href="?page=<?php echo $page - 1; ?>" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition-colors">
-                <i class="fa-solid fa-chevron-left"></i>
-            </a>
-        <?php else: ?>
-            <span class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md cursor-not-allowed">
-                <i class="fa-solid fa-chevron-left"></i>
-            </span>
-        <?php endif; ?>
 
-        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-            <a href="?page=<?php echo $i; ?>" class="px-4 py-2 <?php echo $i == $page ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'; ?> rounded-md hover:bg-blue-500 hover:text-white transition-colors">
-                <?php echo $i; ?>
-            </a>
-        <?php endfor; ?>
-        <?php if ($page < $total_pages): ?>
-            <a href="?page=<?php echo $page + 1; ?>" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition-colors">
-                <i class="fa-solid fa-chevron-right"></i>
-            </a>
-        <?php else: ?>
-            <span class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md cursor-not-allowed">
-                <i class="fa-solid fa-chevron-right"></i>
-            </span>
-        <?php endif; ?>
-    </div>
 
+
+
+        <!-- Affichage des véhicules -->
+        <div id="vehicles-container" class="reservation-card bg-white border border-gray-300 rounded-lg shadow-lg p-6 hover:shadow-xl transition-transform transform hover:-translate-y-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid gap-6">
+                <?php foreach ($vehicules as $vehicule): ?>
+                <div class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105">
+                    <img src="<?php echo ($vehicule['image']); ?>" alt="vehicle-<?php echo ($vehicule['marque']); ?>" class="w-36 h-24 object-cover mx-auto mb-4">
+                    <h3 class="text-lg font-bold text-gray-900 mb-2"><?php echo ($vehicule['marque'] . ' ' . $vehicule['madele']); ?></h3>
+                    <p class="text-sm text-gray-600 mb-4">Prix : <?php echo ($vehicule['prix']); ?> DH</p>
+                    <form action="reservation_vehicule.php" method="POST">
+                        <input type="hidden" name="id_vehicule" value="<?php echo $vehicule['id_vehicule']; ?>">
+                        <input type="hidden" name="id_user" value="<?php echo $_SESSION['id_user']; ?>"> 
+                        <button type="submit" class="text-white bg-red-600 rounded-lg w-56 h-10 text-lg font-bold hover:bg-red-700 transition-colors">
+                            Reserved
+                        </button>
+                    </form>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex justify-center items-center space-x-2 mt-8">
+            <?php if ($page > 1): ?>
+                <a href="?page=<?php echo $page - 1; ?>" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition-colors">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </a>
+            <?php else: ?>
+                <span class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md cursor-not-allowed">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </span>
+            <?php endif; ?>
+
+            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                <a href="?page=<?php echo $i; ?>" class="px-4 py-2 <?php echo $i == $page ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'; ?> rounded-md hover:bg-blue-500 hover:text-white transition-colors">
+                    <?php echo $i; ?>
+                </a>
+            <?php endfor; ?>
+            <?php if ($page < $total_pages): ?>
+                <a href="?page=<?php echo $page + 1; ?>" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition-colors">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </a>
+            <?php else: ?>
+                <span class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md cursor-not-allowed">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </span>
+            <?php endif; ?>
+        </div>
 
     <footer class="bg-gray-800 text-gray-300 py-10 mt-12">
         <div class="container mx-auto px-4">
