@@ -72,20 +72,31 @@ $aviss = $avis->getAllAvis();
 
                 <div class="flex justify-center mb-2">
                     <?php 
+                    // Affichage des étoiles pleines
                     for ($i = 0; $i < $full_stars; $i++) {
                         echo '<i class="fas fa-star text-yellow-500"></i>';
                     }
 
+                    // Affichage des étoiles vides
                     for ($i = 0; $i < $empty_stars; $i++) {
                         echo '<i class="far fa-star text-yellow-500"></i>';
                     }
                     ?>
                 </div>
 
+                <!-- Formulaire de suppression -->
+                <form action="supprimer_avis.php" method="POST">
+                    <input type="hidden" name="id_avis" value="<?= $avisData['id_avis']; ?>">
+                    <button type="submit" class="text-white bg-red-600 rounded-lg px-4 py-2 hover:bg-red-700 transition-colors">
+                        Supprimer
+                    </button>
+                </form>
+
             </div>
         <?php endforeach; ?>
     </div>
 </div>
+
 
 
 <footer class="bg-gray-800 text-gray-300 py-10 mt-12">

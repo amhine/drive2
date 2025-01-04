@@ -76,7 +76,8 @@ class Avis {
     public function supprimerAvis($id_avis) {
         $id_avis = intval($id_avis); 
         $query = "DELETE FROM avis WHERE id_avis = $id_avis";
-        return $this->db->exec($query);
+    
+        return $this->db->getConnection()->exec($query);
     }
 
     // Méthode pour modifier un avis

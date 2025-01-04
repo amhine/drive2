@@ -12,9 +12,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $resultat = $utilisateur->connexion($email, $password);
     
     if($resultat == "Connexion réussie") {
-        // Redirection basée sur le rôle stocké dans la session
-        if($_SESSION['role'] == 1) { 
-            header("Location: ajoutadmin.php");
+        
+        if($_SESSION['id_role'] == 1) { 
+            header("Location: dashbord.php");
         } else { 
             header("Location: index.php");
         }
