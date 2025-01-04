@@ -1,17 +1,15 @@
 <?php
 class Vehicule {
     private $db;
-    
-    // Constructeur pour initialiser la connexion à la base de données
+
     public function __construct($db) {
         $this->db = $db;
     }
 
-    // Récupérer les détails d'un véhicule par son ID
     public function getVehiculeById($id_vehicule) {
-        $query = "SELECT * FROM vehicule WHERE id_vehicule = :id_vehicule";
+        $query = "SELECT * FROM vehicule WHERE id_vehicule = $id_vehicule";
         $stmt = $this->db->prepare($query);
-        $stmt->execute(['id_vehicule' => $id_vehicule]);
+        $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -27,13 +25,10 @@ class Vehicule {
         }
     }
 
-   
-
     public function getVehiculesByCategorie($id_categorie) {
         try {
-            $sql = "SELECT * FROM vehicule WHERE id_categorie = :id_categorie";
+            $sql = "SELECT * FROM vehicule WHERE id_categorie = $id_categorie";
             $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(':id_categorie', $id_categorie, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
@@ -41,56 +36,30 @@ class Vehicule {
             return [];
         }
     }
-    
-    
-    
-
-    // Ajouter un véhicule dans la base de données
     public function addVehicule($marque, $modele, $prix, $id_categorie, $image) {
         $query = "INSERT INTO vehicule (marque, madele, prix, id_categorie, image) 
-                  VALUES (:marque, :madele, :prix, :id_categorie, :image)";
+                  VALUES ('$marque', '$modele', '$prix', '$id_categorie', '$image')";
         $stmt = $this->db->prepare($query);
-        $stmt->execute([
-            'marque' => $marque,
-            'madele' => $modele,
-            'prix' => $prix,
-            'id_categorie' => $id_categorie,
-            'image' => $image
-        ]);
+        $stmt->execute();
     }
 
-    // Mettre à jour un véhicule
-    public function updateVehicule($id_vehicule, $marque, $madele, $prix, $id_categorie, $image) {
-        // Requête SQL pour mettre à jour le véhicule
-        $query = "UPDATE vehicule SET marque = :marque, madele = :madele, prix = :prix, id_categorie = :id_categorie, image = :image WHERE id_vehicule = :id_vehicule";
-
+    public function updateVehicule($id_vehicule, $marque, $modele, $prix, $id_categorie, $image) {
+        $query = "UPDATE vehicule SET marque = '$marque', madele = '$modele', prix = '$prix', id_categorie = '$id_categorie', image = '$image' WHERE id_vehicule = $id_vehicule";
         $stmt = $this->db->prepare($query);
-
-        // Lier les paramètres
-        $stmt->bindParam(':id_vehicule', $id_vehicule);
-        $stmt->bindParam(':marque', $marque);
-        $stmt->bindParam(':madele', $madele);
-        $stmt->bindParam(':prix', $prix);
-        $stmt->bindParam(':id_categorie', $id_categorie);
-        $stmt->bindParam(':image', $image);
-
-        // Exécuter la requête
         return $stmt->execute();
     }
-    
-    // Supprimer un véhicule
+
     public function deleteVehicule($id_vehicule) {
-        $query = "DELETE FROM vehicule WHERE id_vehicule = :id_vehicule";
+        $query = "DELETE FROM vehicule WHERE id_vehicule = $id_vehicule";
         $stmt = $this->db->prepare($query);
-        $stmt->execute(['id_vehicule' => $id_vehicule]);
+        $stmt->execute();
     }
 
+    // pagination
     public function getvehiculee($start_from, $limit) {
         try {
-            $sql = "SELECT * FROM vehicule LIMIT :start_from, :limit";
+            $sql = "SELECT * FROM vehicule LIMIT $start_from, $limit";
             $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(':start_from', $start_from, PDO::PARAM_INT);
-            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
@@ -98,6 +67,38 @@ class Vehicule {
             return [];
         }
     }
-    
+
+    // filtrage
+    public function getCount($id_categorie = 0, $search = '') {
+        $query = "SELECT COUNT(*) as total FROM vehicule";
+        
+        if ($id_categorie > 0) {
+            $query .= " WHERE id_categorie = $id_categorie";
+        }
+
+        if (!empty($search)) {
+            $query .= ($id_categorie > 0 ? " AND" : " WHERE") . " (marque LIKE '%$search%' OR madele LIKE '%$search%')";
+        }
+
+        $stmt = $this->db->connect->query($query);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'];
+    }
+
+    // filtres et pagination
+    public function getVehicules($id_categorie = 0, $search = '', $start_from = 0, $limit = 4) {
+        $query = "SELECT * FROM vehicule";
+        if ($id_categorie > 0) {
+            $query .= " WHERE id_categorie = $id_categorie";
+        }
+        if (!empty($search)) {
+            $query .= ($id_categorie > 0 ? " AND" : " WHERE") . " (marque LIKE '%$search%' OR madele LIKE '%$search%')";
+        }
+        $query .= " LIMIT $start_from, $limit";
+
+        $stmt = $this->db->connect->query($query);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
+
 ?>
