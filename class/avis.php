@@ -34,6 +34,23 @@ class Avis {
             return 0; 
         }
 
+        public function Nomvehicule() {
+            
+            $sql = "SELECT v.marque AS Nom
+                    FROM vehicule v
+                    JOIN avis a ON v.id_vehicule = a.id_vehicule
+                    WHERE a.id_vehicule = :id_vehicule;";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':id_vehicule', $this->id_vehicule, PDO::PARAM_INT); 
+            $stmt->execute(); 
+            
+            if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                return $row['Nom']; 
+            }
+            return 0; 
+        }
+
 
     // Méthode pour ajouter un avis
     public function ajouterAvis($note, $id_vehicule, $id_user) {
