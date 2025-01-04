@@ -22,6 +22,8 @@ $aviss = $avis->getAllAvis();
     <title>Dashboard</title>
     <link rel="stylesheet" href="input.css">
     <link rel="stylesheet" href="output.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
 </head>
 <body>
 <nav class="bg-gray-800 mb-12">
@@ -58,12 +60,28 @@ $aviss = $avis->getAllAvis();
         <?php foreach ($aviss as $avisData): ?>
             <?php 
                 $avis = new Avis($db, $avisData);
+                $note = $avisData['note']; 
+                $max_note = 5; 
+                $full_stars = floor($note); 
+                $empty_stars = $max_note - $full_stars; 
             ?>
             <div class="flex flex-col items-center text-center bg-white shadow-md rounded-lg p-4 transition-transform transform hover:scale-105">
                 
-                <h3 class="text-lg font-bold text-gray-900 mb-2"><?= $avis->Nomutilisateur(); ?></h3> 
-                
-                <h5 class="text-lg font-bold text-gray-900 mb-2"><?= $avisData['note']; ?></h5> 
+                <h3 class="text-lg font-bold text-blue-400 mb-2"><?= $avis->Nomutilisateur(); ?></h3>
+                <span class="text-lg font-bold text-gray-900 mb-2"><?= $avis->Nomvehicule(); ?></span> 
+
+                <div class="flex justify-center mb-2">
+                    <?php 
+                    for ($i = 0; $i < $full_stars; $i++) {
+                        echo '<i class="fas fa-star text-yellow-500"></i>';
+                    }
+
+                    for ($i = 0; $i < $empty_stars; $i++) {
+                        echo '<i class="far fa-star text-yellow-500"></i>';
+                    }
+                    ?>
+                </div>
+
             </div>
         <?php endforeach; ?>
     </div>
