@@ -17,13 +17,15 @@ CREATE TABLE utilisateur(
 
 
 CREATE TABLE categorie (
-id_categorie int not null PRIMARY key ,
-    nom varchar (100) not null 
+id_categorie int not null PRIMARY key AUTO_INCREMENT ,
+    nom varchar (100) not null, 
+description varchar (100) not null,
+image varchar (100)not null
 );
 
 
 CREATE TABLE vehicule(
-id_vehicule int not null PRIMARY key ,
+id_vehicule int not null PRIMARY key AUTO_INCREMENT,
     marque varchar (100)not null,
     madele varchar (100) not null ,
     prix int not null,
@@ -31,14 +33,17 @@ id_vehicule int not null PRIMARY key ,
     FOREIGN KEY (id_categorie) REFERENCES categorie (id_categorie) ON DELETE CASCADE
 );
 CREATE TABLE avis (
-id_avis int not null PRIMARY KEY,
-    note int not null,
-    id_vehicule int not null,
-    FOREIGN KEY (id_vehicule) REFERENCES vehicule (id_vehicule) ON DELETE CASCADE
+    id_avis INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    note INT NOT NULL,
+    id_vehicule INT NOT NULL,
+    id_user INT NOT NULL,
+    FOREIGN KEY (id_vehicule) REFERENCES vehicule(id_vehicule) ON DELETE CASCADE,
+    FOREIGN KEY (id_user) REFERENCES users(id_user) ON DELETE CASCADE
 );
+
 CREATE TABLE reservation (
-id_reservation int not null PRIMARY KEY,
-    date int not null,
+id_reservation int not null PRIMARY KEY AUTO_INCREMENT,
+    date DATE not null,
     prix int not null,
     lieu varchar(70) not null,
     id_user int not null,
@@ -47,3 +52,76 @@ id_reservation int not null PRIMARY KEY,
     FOREIGN KEY (id_vehicule) REFERENCES vehicule(id_vehicule)ON DELETE CASCADE
     
 );
+
+CREATE PROCEDURE AjouterReservation (
+    IN R_date DATE,                
+    IN R_prix INT,               
+    IN R_lieu VARCHAR(70),         
+    IN R_id_user INT,              
+    IN R_id_vehicule INT          
+)
+BEGIN
+   
+    INSERT INTO reservation (date, prix, lieu, id_user, id_vehicule)
+    VALUES (R_date, R_prix, R_lieu, R_id_user, R_id_vehicule);
+    
+        SELECT 'Réservation ajoutée avec succès' AS message;
+END;
+
+
+
+CREATE VIEW ListeVehicules AS
+SELECT 
+    v.id_vehicule,               
+    v.marque,                     
+    v.modele,                     
+    v.prix,                       
+    c.nom AS categorie,           
+    c.description,                
+    c.image AS image_categorie,   
+    IFNULL(AVG(e.note), 0) AS note_moyenne, 
+    IFNULL(COUNT(e.id_evaluation), 0) AS nombre_evaluations, 
+    v.id_categorie,               
+    v.prix,                      
+    CASE 
+        WHEN v.id_vehicule IS NOT NULL THEN TRUE 
+        ELSE FALSE 
+    END AS disponibilite         
+FROM 
+    vehicule v
+JOIN 
+    categorie c ON v.id_categorie = c.id_categorie  
+LEFT JOIN 
+    evaluations e ON v.id_vehicule = e.id_vehicule  
+GROUP BY 
+    v.id_vehicule, v.marque, v.modele, v.prix, c.nom, c.description, c.image, v.id_categorie;
+
+
+
+
+
+CREATE VIEW ListeVehicules AS
+SELECT 
+    v.id_vehicule,               
+    v.marque,                     
+    v.madele,                    
+    v.prix,                      
+    c.nom AS categorie,         
+    c.description,               
+    c.image AS image_categorie,   
+    IFNULL(AVG(a.note), 0) AS note_moyenne,  
+    IFNULL(COUNT(a.id_avis), 0) AS nombre_evaluations,  
+    v.id_categorie,               
+                         
+    CASE 
+        WHEN v.id_vehicule IS NOT NULL THEN TRUE 
+        ELSE FALSE 
+    END AS disponibilite          
+FROM 
+    vehicule v
+JOIN 
+    categorie c ON v.id_categorie = c.id_categorie  
+LEFT JOIN 
+    avis a ON v.id_vehicule = a.id_vehicule 
+GROUP BY 
+    v.id_vehicule, v.marque, v.madele, v.prix, c.nom, c.description, c.image, v.id_categorie;
