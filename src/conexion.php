@@ -2,7 +2,7 @@
 class Database {
     private $host = "localhost";  
     private $username = "root";   
-    private $password = "";       
+    private $password = "root";  // Vérifiez que ce mot de passe est correct
     private $dbname = "drive";
     public $connect;
 
@@ -23,6 +23,5 @@ class Database {
     public function prepare($sql) {
         return $this->connect->prepare($sql);
     }
-   
 }
 ?>
